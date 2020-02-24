@@ -25,11 +25,11 @@
 }:
 
 let
-  version = "2.0.0";
+  version = "1.2.1";
 
   src = fetchurl {
     url = "https://github.com/bazelbuild/bazel/releases/download/${version}/bazel-${version}-dist.zip";
-    sha256 = "1fvc7lakdczim1i99hrwhwx2w75afd3q9fgbhrx7i3pnav3a6kbj";
+    sha256 = "1qfk14mgx1m454b4w4ldggljzqkqwpdwrlynq7rc8aq11yfs8p95";
   };
 
   # Update with `eval $(nix-build -A bazel.updater)`,
@@ -49,8 +49,8 @@ let
       srcs.io_bazel_rules_sass
       srcs.platforms
       (if stdenv.hostPlatform.isDarwin
-       then srcs."java_tools_javac11_darwin-v7.0.zip"
-       else srcs."java_tools_javac11_linux-v7.0.zip")
+       then srcs."java_tools_javac11_darwin-v6.1.zip"
+       else srcs."java_tools_javac11_linux-v6.1.zip")
       srcs."coverage_output_generator-v2.0.zip"
       srcs.build_bazel_rules_nodejs
       srcs."android_tools_pkg-0.12.tar.gz"
@@ -110,7 +110,7 @@ let
   remote_java_tools = stdenv.mkDerivation {
     name = "remote_java_tools_${system}";
 
-    src = srcDepsSet."java_tools_javac11_${system}-v7.0.zip";
+    src = srcDepsSet."java_tools_javac11_${system}-v6.1.zip";
 
     nativeBuildInputs = [ autoPatchelfHook unzip ];
     buildInputs = [ gcc-unwrapped ];
@@ -159,6 +159,7 @@ stdenv.mkDerivation rec {
     # On Darwin, the last argument to gcc is coming up as an empty string. i.e: ''
     # This is breaking the build of any C target. This patch removes the last
     # argument if it's found to be an empty string.
+    ./glibc2_3.patch
     ./trim-last-argument-to-gcc-if-empty.patch
 
     # --experimental_strict_action_env (which may one day become the default
@@ -347,7 +348,7 @@ stdenv.mkDerivation rec {
 
       # libcxx includes aren't added by libcxx hook
       # https://github.com/NixOS/nixpkgs/pull/41589
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -isystem ${libcxx}/include/c++/v1"
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -isystem ${libcxx}/include/c++/v1 --cxxopt=-std=c++11"
 
       # don't use system installed Xcode to run clang, use Nix clang instead
       sed -i -E "s;/usr/bin/xcrun (--sdk macosx )?clang;${stdenv.cc}/bin/clang $NIX_CFLAGS_COMPILE $(bazelLinkFlags) -framework CoreFoundation;g" \
