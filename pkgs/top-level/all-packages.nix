@@ -165,6 +165,8 @@ in
 
   corgi = callPackage ../development/tools/corgi { };
 
+  colorz = callPackage ../tools/misc/colorz { };
+
   dhallToNix = callPackage ../build-support/dhall-to-nix.nix {
     inherit dhall-nix;
   };
@@ -948,6 +950,8 @@ in
   httperf = callPackage ../tools/networking/httperf { };
 
   ili2c = callPackage ../tools/misc/ili2c { };
+
+  imageworsener = callPackage ../tools/graphics/imageworsener { };
 
   imgpatchtools = callPackage ../development/mobile/imgpatchtools { };
 
@@ -1965,6 +1969,10 @@ in
   meritous = callPackage ../games/meritous { };
 
   opendune = callPackage ../games/opendune { };
+
+  merriweather = callPackage ../data/fonts/merriweather { };
+
+  merriweather-sans = callPackage ../data/fonts/merriweather-sans { };
 
   meson = callPackage ../development/tools/build-managers/meson { };
 
@@ -3162,9 +3170,7 @@ in
 
   ethtool = callPackage ../tools/misc/ethtool { };
 
-  ettercap = callPackage ../applications/networking/sniffers/ettercap {
-    openssl = openssl_1_0_2;
-  };
+  ettercap = callPackage ../applications/networking/sniffers/ettercap { };
 
   euca2ools = callPackage ../tools/virtualization/euca2ools { };
 
@@ -12470,7 +12476,9 @@ in
 
   libfakekey = callPackage ../development/libraries/libfakekey { };
 
-  libfido2 = callPackage ../development/libraries/libfido2 { };
+  libfido2 = callPackage ../development/libraries/libfido2 {
+    inherit (darwin.apple_sdk.frameworks) IOKit;
+  };
 
   libfilezilla = callPackage ../development/libraries/libfilezilla { };
 
@@ -23994,6 +24002,8 @@ in
   neuron-full = neuron-mpi.override { inherit python; };
 
   mrbayes = callPackage ../applications/science/biology/mrbayes { };
+
+  mrtrix = callPackage ../applications/science/biology/mrtrix { python = python3; };
 
   megahit = callPackage ../applications/science/biology/megahit { };
 
