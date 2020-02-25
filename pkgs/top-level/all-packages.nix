@@ -165,8 +165,6 @@ in
 
   corgi = callPackage ../development/tools/corgi { };
 
-  colorz = callPackage ../tools/misc/colorz { };
-
   dhallToNix = callPackage ../build-support/dhall-to-nix.nix {
     inherit dhall-nix;
   };
@@ -950,8 +948,6 @@ in
   httperf = callPackage ../tools/networking/httperf { };
 
   ili2c = callPackage ../tools/misc/ili2c { };
-
-  imageworsener = callPackage ../tools/graphics/imageworsener { };
 
   imgpatchtools = callPackage ../development/mobile/imgpatchtools { };
 
@@ -1969,10 +1965,6 @@ in
   meritous = callPackage ../games/meritous { };
 
   opendune = callPackage ../games/opendune { };
-
-  merriweather = callPackage ../data/fonts/merriweather { };
-
-  merriweather-sans = callPackage ../data/fonts/merriweather-sans { };
 
   meson = callPackage ../development/tools/build-managers/meson { };
 
@@ -3170,7 +3162,9 @@ in
 
   ethtool = callPackage ../tools/misc/ethtool { };
 
-  ettercap = callPackage ../applications/networking/sniffers/ettercap { };
+  ettercap = callPackage ../applications/networking/sniffers/ettercap {
+    openssl = openssl_1_0_2;
+  };
 
   euca2ools = callPackage ../tools/virtualization/euca2ools { };
 
@@ -9749,14 +9743,17 @@ in
 
   bam = callPackage ../development/tools/build-managers/bam {};
 
-  bazel = callPackage ../development/tools/build-managers/bazel {
+  bazel_base = recurseIntoAttrs (callPackages ../development/tools/build-managers/bazel {
     inherit (darwin) cctools;
     inherit (darwin.apple_sdk.frameworks) CoreFoundation CoreServices Foundation;
     buildJdk = jdk8;
     buildJdkName = "jdk8";
     runJdk = jdk11_headless;
     stdenv = if stdenv.cc.isClang then llvmPackages_6.stdenv else stdenv;
-  };
+  });
+  inherit (bazel_base)
+    bazel_1
+    bazel;
 
   bazel-buildtools = callPackage ../development/tools/build-managers/bazel/buildtools { };
   buildifier = bazel-buildtools;
@@ -12476,9 +12473,7 @@ in
 
   libfakekey = callPackage ../development/libraries/libfakekey { };
 
-  libfido2 = callPackage ../development/libraries/libfido2 {
-    inherit (darwin.apple_sdk.frameworks) IOKit;
-  };
+  libfido2 = callPackage ../development/libraries/libfido2 { };
 
   libfilezilla = callPackage ../development/libraries/libfilezilla { };
 
@@ -24002,8 +23997,6 @@ in
   neuron-full = neuron-mpi.override { inherit python; };
 
   mrbayes = callPackage ../applications/science/biology/mrbayes { };
-
-  mrtrix = callPackage ../applications/science/biology/mrtrix { python = python3; };
 
   megahit = callPackage ../applications/science/biology/megahit { };
 
