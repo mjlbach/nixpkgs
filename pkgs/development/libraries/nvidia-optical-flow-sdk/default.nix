@@ -1,7 +1,7 @@
 { stdenv, fetchFromGitHub}:
 
 stdenv.mkDerivation {
-  name = "nvidia-video-sdk-6.0.1";
+  name = "nvidia-optical-flow-sdk";
 
   src = fetchFromGitHub {
     owner = "NVIDIA";
