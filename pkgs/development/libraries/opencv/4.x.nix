@@ -249,6 +249,8 @@ stdenv.mkDerivation {
     "-DCUDA_FAST_MATH=ON"
     "-DCUDA_HOST_COMPILER=${cudatoolkit.cc}/bin/cc"
     "-DCUDA_NVCC_FLAGS=--expt-relaxed-constexpr"
+    "-DNVIDIA_OPTICAL_FLOW_1_0_HEADERS_PATH=${nvidia-optical-flow-sdk}/include}"
+    "-DHAVE_NVIDIA_OPTFLOW=1"
   ] ++ lib.optionals stdenv.isDarwin [
     "-DWITH_OPENCL=OFF"
     "-DWITH_LAPACK=OFF"
