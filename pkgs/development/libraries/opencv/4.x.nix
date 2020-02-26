@@ -213,7 +213,7 @@ stdenv.mkDerivation {
     # tesseract & leptonica.
     ++ lib.optionals enableTesseract [ tesseract leptonica ]
     ++ lib.optional enableTbb tbb
-    ++ lib.optional enableCuda [cudatoolkit nvidia-optical-flow-sdk]
+    ++ lib.optionals enableCuda [cudatoolkit nvidia-optical-flow-sdk]
     ++ lib.optionals stdenv.isDarwin [ bzip2 AVFoundation Cocoa VideoDecodeAcceleration ]
     ++ lib.optionals enableDocs [ doxygen graphviz-nox ];
 
