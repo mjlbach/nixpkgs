@@ -15,7 +15,7 @@
 , enableContrib   ? true
 
 , enableCuda      ? (config.cudaSupport or false) &&
-                    stdenv.hostPlatform.isx86_64, cudatoolkit
+                    stdenv.hostPlatform.isx86_64, cudatoolkit, nvidia-optical-flow-sdk
 
 , enableUnfree    ? false
 , enableIpp       ? false
@@ -213,7 +213,7 @@ stdenv.mkDerivation {
     # tesseract & leptonica.
     ++ lib.optionals enableTesseract [ tesseract leptonica ]
     ++ lib.optional enableTbb tbb
-    ++ lib.optional enableCuda cudatoolkit
+    ++ lib.optional enableCuda [cudatoolkit nvidia-optical-flow-sdk]
     ++ lib.optionals stdenv.isDarwin [ bzip2 AVFoundation Cocoa VideoDecodeAcceleration ]
     ++ lib.optionals enableDocs [ doxygen graphviz-nox ];
 
