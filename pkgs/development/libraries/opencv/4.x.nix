@@ -167,7 +167,6 @@ stdenv.mkDerivation {
   # what appears to be some stray headers in dnn/misc/tensorflow
   # in contrib when generating the Python bindings:
   patches = [./cuda_opt_flow.patch];
-
   postPatch = ''
     sed -i '/Add these standard paths to the search paths for FIND_LIBRARY/,/^\s*$/{d}' CMakeLists.txt
     sed -i -e 's|if len(decls) == 0:|if len(decls) == 0 or "opencv2/" not in hdr:|' ./modules/python/src2/gen2.py
@@ -179,7 +178,7 @@ stdenv.mkDerivation {
     installExtraFile ade +
     lib.optionalString enableIpp (installExtraFiles ippicv) + (
     lib.optionalString buildContrib ''
-      cmakeFlagsArray+=("-DOPENCV_EXTRA_MODULES_PATH=$NIX_BUILD_TOP/source/build/3rdparty)
+      cmakeFlagsArray+=("-DOPENCV_EXTRA_MODULES_PATH=$NIX_BUILD_TOP/source/opencv_contrib")
 
       ${installExtraFiles vgg}
       ${installExtraFiles boostdesc}
