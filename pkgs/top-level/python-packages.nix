@@ -5118,6 +5118,8 @@ in {
 
   pysparse = callPackage ../development/python-modules/pysparse { };
 
+  pyspy = callPackage ../development/python-modules/py-spy { } ;
+
   pyupdate = callPackage ../development/python-modules/pyupdate {};
 
   pyvmomi = callPackage ../development/python-modules/pyvmomi { };
