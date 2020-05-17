@@ -74,7 +74,7 @@ in buildPythonApplication rec {
     pillow rencode pycrypto cryptography pycups lz4 dbus-python
     netifaces numpy pygobject3 pycairo gst-python pam
     pyopengl paramiko opencv4 python-uinput pyxdg
-    ipaddress idna
+    ipaddress idna pyinotify avahi pycuda
   ];
 
     # error: 'import_cairo' defined but not used
@@ -93,7 +93,7 @@ in buildPythonApplication rec {
   preFixup = ''
     gappsWrapperArgs+=(
       --set XPRA_INSTALL_PREFIX "$out"
-      --prefix LD_LIBRARY_PATH : ${libfakeXinerama}/lib
+      --prefix LD_LIBRARY_PATH : ${libfakeXinerama}/lib:/run/opengl-driver/lib:/run/opengl-driver-32/lib
       --prefix PATH : ${stdenv.lib.makeBinPath [ getopt xorgserver xauth which utillinux pulseaudio ]}
     )
   '';
