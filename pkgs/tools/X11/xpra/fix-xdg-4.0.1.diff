@@ -1,0 +1,13 @@
+diff --git a/xpra/platform/xposix/xdg_helper.py b/xpra/platform/xposix/xdg_helper.py
+index 6127679..4fd3e65 100644
+--- a/xpra/platform/xposix/xdg_helper.py
++++ b/xpra/platform/xposix/xdg_helper.py
+@@ -263,7 +263,7 @@ def do_load_xdg_menu_data():
+                 try:
+                     menu = parse()
+                     break
+-                except ParsingError as e:
++                except (ParsingError, AttributeError) as e:
+                     log("do_load_xdg_menu_data()", exc_info=True)
+                     error = e
+                     menu = None

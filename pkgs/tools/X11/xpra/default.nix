@@ -44,6 +44,8 @@ in buildPythonApplication rec {
       inherit libfakeXinerama;
     })
     ./fix-41106.patch
+    # This patch should be removed after the 4.0.2 bump
+    ./fix-xdg-4.0.1.diff
   ];
 
   postPatch = ''
