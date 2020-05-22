@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchurl, callPackage, substituteAll, python3, pkgconfig, writeText
+{ stdenv, lib, fetchurl, fetchpatch, callPackage, substituteAll, python3, pkgconfig, writeText
 , xorg, gtk3, glib, pango, cairo, gdk-pixbuf, atk
 , wrapGAppsHook, xorgserver, getopt, xauth, utillinux, which
 , ffmpeg_4, x264, libvpx, libwebp, x265
@@ -10,6 +10,12 @@ with lib;
 
 let
   inherit (python3.pkgs) cython buildPythonApplication;
+  r26442 = fetchpatch {
+    url = "https://xpra.org/trac/changeset/26442/xpra?format=diff&new=26442";
+    name = "r26442.patch";
+    stripLen = 2;
+    sha256 = "1szjl950ksnmjz83m17apwd2rsw1jdf517x2bim2b561f89q2yfp";
+  };
 
   xf86videodummy = xorg.xf86videodummy.overrideDerivation (p: {
     patches = [
@@ -45,7 +51,7 @@ in buildPythonApplication rec {
     })
     ./fix-41106.patch
     # This patch should be removed after the 4.0.2 bump
-    ./fix-xdg-4.0.1.diff
+    r26442
   ];
 
   postPatch = ''
