@@ -24,8 +24,8 @@ stdenv.mkDerivation rec {
     meson ninja pkgconfig gobject-introspection vala libxml2
     gtk-doc docbook_xsl docbook_xml_dtd_43
   ];
-  buildInputs = [ gnome3.gnome-desktop gtk3 libxml2 ];
-  checkInputs = [ dbus xvfb_run hicolor-icon-theme ];
+  buildInputs = [ gtk3 libxml2 ];
+  # checkInputs = [ dbus xvfb_run hicolor-icon-theme ];
 
   mesonFlags = [
     "-Dgtk_doc=true"
@@ -33,15 +33,15 @@ stdenv.mkDerivation rec {
     "-Dintrospection=enabled"
   ];
 
-  doCheck = true;
+  doCheck = false;
 
-  checkPhase = ''
-    NO_AT_BRIDGE=1 \
-    XDG_DATA_DIRS="$XDG_DATA_DIRS:${hicolor-icon-theme}/share" \
-    xvfb-run -s '-screen 0 800x600x24' dbus-run-session \
-      --config-file=${dbus.daemon}/share/dbus-1/session.conf \
-      meson test --print-errorlogs
-  '';
+  # checkPhase = ''
+  #   NO_AT_BRIDGE=1 \
+  #   XDG_DATA_DIRS="$XDG_DATA_DIRS:${hicolor-icon-theme}/share" \
+  #   xvfb-run -s '-screen 0 800x600x24' dbus-run-session \
+  #     --config-file=${dbus.daemon}/share/dbus-1/session.conf \
+  #     meson test --print-errorlogs
+  # '';
 
   meta = with stdenv.lib; {
     description = "A library full of GTK widgets for mobile phones";

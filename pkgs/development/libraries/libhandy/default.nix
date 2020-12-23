@@ -9,8 +9,7 @@
 , docbook_xsl
 , docbook_xml_dtd_43
 , gtk3
-, gnome3
-, glade
+# , glade
 , dbus
 , xvfb_run
 , libxml2
@@ -25,7 +24,7 @@ stdenv.mkDerivation rec {
   pname = "libhandy";
   version = "1.0.2";
 
-  outputs = [ "out" "dev" "devdoc" "glade" ];
+  outputs = [ "out" "dev" "devdoc" ];
   outputBin = "dev";
 
   src = fetchurl {
@@ -47,7 +46,7 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     gdk-pixbuf
-    glade
+    # glade
     gtk3
     libxml2
   ];
@@ -63,22 +62,23 @@ stdenv.mkDerivation rec {
 
   mesonFlags = [
     "-Dgtk_doc=true"
+    "-Dglade_catalog=disabled"
   ];
 
   # Uses define_variable in pkgconfig, but we still need it to use the glade output
-  PKG_CONFIG_GLADEUI_2_0_MODULEDIR = "${placeholder "glade"}/lib/glade/modules";
-  PKG_CONFIG_GLADEUI_2_0_CATALOGDIR = "${placeholder "glade"}/share/glade/catalogs";
+  # PKG_CONFIG_GLADEUI_2_0_MODULEDIR = "${placeholder "glade"}/lib/glade/modules";
+  # PKG_CONFIG_GLADEUI_2_0_CATALOGDIR = "${placeholder "glade"}/share/glade/catalogs";
 
-  doCheck = true;
+  doCheck = false;
 
-  checkPhase = ''
-    NO_AT_BRIDGE=1 \
-    XDG_DATA_DIRS="$XDG_DATA_DIRS:${hicolor-icon-theme}/share" \
-    GDK_PIXBUF_MODULE_FILE="${librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" \
-    xvfb-run -s '-screen 0 800x600x24' dbus-run-session \
-      --config-file=${dbus.daemon}/share/dbus-1/session.conf \
-      meson test --print-errorlogs
-  '';
+  # checkPhase = ''
+  #   NO_AT_BRIDGE=1 \
+  #   XDG_DATA_DIRS="$XDG_DATA_DIRS:${hicolor-icon-theme}/share" \
+  #   GDK_PIXBUF_MODULE_FILE="${librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" \
+  #   xvfb-run -s '-screen 0 800x600x24' dbus-run-session \
+  #     --config-file=${dbus.daemon}/share/dbus-1/session.conf \
+  #     meson test --print-errorlogs
+  # '';
 
   meta = with stdenv.lib; {
     changelog = "https://gitlab.gnome.org/GNOME/libhandy/-/tags/${version}";
@@ -86,6 +86,6 @@ stdenv.mkDerivation rec {
     homepage = "https://gitlab.gnome.org/GNOME/libhandy";
     license = licenses.lgpl21Plus;
     maintainers = teams.gnome.members;
-    platforms = platforms.linux;
+    platforms = platforms.unix;
   };
 }
