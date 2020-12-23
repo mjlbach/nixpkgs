@@ -8,7 +8,9 @@
 , icu
 , vala
 , gobject-introspection
-, gnome3
+, gtk-mac-integration
+, autoreconfHook
+# , gnome3
 }:
 
 stdenv.mkDerivation rec {
@@ -28,12 +30,14 @@ stdenv.mkDerivation rec {
     vala
     gobject-introspection
     libxml2
+    autoreconfHook
   ];
 
   buildInputs = [
     glib
     gtk3
     icu
+    gtk-mac-integration
   ];
 
   propagatedBuildInputs = [
@@ -41,18 +45,26 @@ stdenv.mkDerivation rec {
     enchant2
   ];
 
-  passthru = {
-    updateScript = gnome3.updateScript {
-      packageName = pname;
-      versionPolicy = "none";
-    };
-  };
+  patches  = [
+    ./macos_makefile.patch
+  ];
+
+  # preConfigure = ''
+  #   aclocal
+  #   '';
+
+  # passthru = {
+  #   updateScript = gnome3.updateScript {
+  #     packageName = pname;
+  #     versionPolicy = "none";
+  #   };
+  # };
 
   meta = with stdenv.lib; {
     description = "A spell-checking library for GTK applications";
     homepage = "https://wiki.gnome.org/Projects/gspell";
     license = licenses.lgpl21Plus;
     maintainers = teams.gnome.members;
-    platforms = platforms.linux;
+    platforms = platforms.unix;
   };
 }
