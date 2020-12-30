@@ -1,0 +1,64 @@
+diff --git a/main.lua b/main.lua
+index 9fd1794d..bceb0bce 100644
+--- a/main.lua
++++ b/main.lua
+@@ -22,8 +22,57 @@ end
+ 
+ loadArgs()
+ 
+-LOGPATH  = LOGPATH  or (ROOT:string() .. '/log')
+-METAPATH = METAPATH or (ROOT:string() .. '/meta')
++local sub = string.sub
++local function at(s,i)
++    return sub(s,i,i)
++end
++
++--- assert that the given argument is in fact of the correct type.
++-- @param n argument index
++-- @param val the value
++-- @param tp the type
++-- @param verify an optional verfication function
++-- @param msg an optional custom message
++-- @param lev optional stack position for trace, default 2
++-- @raise if the argument n is not the correct type
++-- @usage assert_arg(1,t,'table')
++-- @usage assert_arg(n,val,'string',path.isdir,'not a directory')
++local function assert_arg (n,val,tp,verify,msg,lev)
++    if type(val) ~= tp then
++        error(("argument %d expected a '%s', got a '%s'"):format(n,tp,type(val)),lev or 2)
++    end
++    if verify and not verify(val) then
++        error(("argument %d: '%s' %s"):format(n,val,msg),lev or 2)
++    end
++end
++
++--- assert the common case that the argument is a string.
++-- @param n argument index
++-- @param val a value that must be a string
++-- @raise val must be a string
++local function assert_string (n,val)
++    assert_arg(n,val,'string',nil,nil,3)
++end
++
++--- Replace a starting '~' with the user's home directory.
++-- In windows, if HOME isn't set, then USERPROFILE is used in preference to
++-- HOMEDRIVE HOMEPATH. This is guaranteed to be writeable on all versions of Windows.
++-- @string P A file path
++local function expanduser(P)
++    assert_string(1,P)
++    if at(P,1) == '~' then
++        local home = os.getenv('HOME')
++        if not home then -- has to be Windows
++            home = os.getenv 'USERPROFILE' or (os.getenv 'HOMEDRIVE' .. os.getenv 'HOMEPATH')
++        end
++        return home..sub(P,2)
++    else
++        return P
++    end
++end
++
++LOGPATH  = expanduser(LOGPATH)  or (ROOT:string() .. '/log')
++METAPATH = expanduser(METAPATH) or (ROOT:string() .. '/meta')
+ 
+ debug.setcstacklimit(200)
+ collectgarbage('generational', 10, 100)
