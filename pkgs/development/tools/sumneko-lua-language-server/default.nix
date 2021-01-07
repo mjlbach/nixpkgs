@@ -21,9 +21,13 @@ stdenv.mkDerivation rec {
     ./sumneko_home_expansion.patch
   ];
 
-  buildPhase = ''
+  preBuildPhase = ''
     cd 3rd/luamake
-    ninja -f ninja/linux.ninja
+  '';
+  
+  ninjaFlags = "-f ninja/linux.ninja";
+
+  postBuildPhase = ''
     cd ../..
     ./3rd/luamake/luamake rebuild
   '';
