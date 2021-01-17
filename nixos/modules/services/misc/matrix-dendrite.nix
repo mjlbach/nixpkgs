@@ -11,17 +11,17 @@ let
 in {
   options.services.matrix-dendrite = {
       enable = mkEnableOption "matrix.org dendrite";
+      dataDir = mkOption {
+        type = types.str;
+        default = "/var/lib/matrix-synapse";
+        description = ''
+          The directory where matrix-synapse stores its stateful data such as
+          certificates, media and uploads.
+        '';
+      };
       settings = lib.mkOption {
         type = lib.types.submodule {
           freeformType = settingsFormat.type;
-          dataDir = mkOption {
-            type = types.str;
-            default = "/var/lib/matrix-synapse";
-            description = ''
-              The directory where matrix-synapse stores its stateful data such as
-              certificates, media and uploads.
-            '';
-          };
         };
       default = {};
       description = ''
@@ -309,7 +309,7 @@ in {
 
     systemd.services.matrix-dendrite = {
       description = "Dendrite Matrix homeserver";
-      after = [ "network.target" ] ++ optional hasLocalPostgresDB "postgresql.service";
+      after = [ "network.target" ]; #++ optional hasLocalPostgresDB "postgresql.service";
       wantedBy = [ "multi-user.target" ];
       # preStart = ''
       #   ${cfg.package}/bin/dendrite-monolith-server \
