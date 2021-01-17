@@ -314,6 +314,7 @@ in {
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
+        WorkingDirectory = cfg.dataDir;
       };
       script = ''
         generate-keys --tls-cert server.crt --tls-key server.key
@@ -334,7 +335,9 @@ in {
         WorkingDirectory = cfg.dataDir;
         ExecStart = ''
           ${pkgs.matrix-dendrite}/bin/dendrite-monolith-server \
-          --config ${configurationYaml} 
+          --tls-cert server.crt \
+          --tls-key server.key \
+          --config ${configurationYaml}
         '';
         ExecReload = "${pkgs.util-linux}/bin/kill -HUP $MAINPID";
         Restart = "on-failure";
