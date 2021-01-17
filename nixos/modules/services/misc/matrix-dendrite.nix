@@ -321,7 +321,7 @@ in {
         Group = "matrix-dendrite";
         WorkingDirectory = cfg.dataDir;
         ExecStart = ''
-          ${pkgs.matrix-dendrite}/bin/dendrite-monolith-server
+          ${pkgs.matrix-dendrite}/bin/dendrite-monolith-server \
           --config ${configurationYaml} 
         '';
         ExecReload = "${pkgs.util-linux}/bin/kill -HUP $MAINPID";
