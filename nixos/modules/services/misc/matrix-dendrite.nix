@@ -302,7 +302,6 @@ in {
       home = cfg.dataDir;
       createHome = true;
       shell = "${pkgs.bash}/bin/bash";
-      uid = config.ids.uids.matrix-dendrite;
       isSystemUser = true;
     };
 
@@ -324,8 +323,7 @@ in {
         Group = "matrix-dendrite";
         WorkingDirectory = cfg.dataDir;
         ExecStart = ''
-          ${pkgs.matrix-dendrite}/bin/dendrite-monolith-server \
-            --config ${dendriteYaml} 
+          ${pkgs.matrix-dendrite}/bin/dendrite-monolith-server
         '';
         ExecReload = "${pkgs.util-linux}/bin/kill -HUP $MAINPID";
         Restart = "on-failure";
