@@ -16,7 +16,7 @@ in {
         type = types.str;
         default = "/var/lib/matrix-dendrite";
         description = ''
-          The directory where matrix-synapse stores its stateful data such as
+          The directory where matrix-dendrite stores its stateful data such as
           certificates, media and uploads.
         '';
       };
@@ -317,7 +317,7 @@ in {
         WorkingDirectory = cfg.dataDir;
       };
       script = ''
-        generate-keys --tls-cert server.crt --tls-key server.key
+        generate-keys --tls-cert server.crt --tls-key server.key --private-key matrix_key.pem
       '';
     };
 
@@ -333,12 +333,7 @@ in {
         User = "matrix-dendrite";
         Group = "matrix-dendrite";
         WorkingDirectory = cfg.dataDir;
-        ExecStart = ''
-          ${pkgs.matrix-dendrite}/bin/dendrite-monolith-server \
-          --tls-cert server.crt \
-          --tls-key server.key \
-          --config ${configurationYaml}
-        '';
+        ExecStart = "${pkgs.matrix-dendrite}/bin/dendrite-monolith-server --config ${configurationYaml} --tls-cert server.crt --tls-key server.key";
         ExecReload = "${pkgs.util-linux}/bin/kill -HUP $MAINPID";
         Restart = "on-failure";
       };
