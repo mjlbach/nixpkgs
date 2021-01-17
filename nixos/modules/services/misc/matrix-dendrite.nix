@@ -6,6 +6,7 @@ let
   cfg = config.services.matrix-dendrite;
   # pg = config.services.postgresql;
   settingsFormat = pkgs.formats.yaml {};
+  configurationYaml = settingsFormat.generate "dendrite.yaml" cfg.settings;
   # hasLocalPostgresDB = let args = cfg.database_args; in
   #   usePostgresql && (!(args ? host) || (elem args.host [ "localhost" "127.0.0.1" "::1" ]));
 in {
@@ -294,9 +295,6 @@ in {
       };
     };
 
-    environment.etc."dendrite.yaml".source =
-      settingsFormat.generate "dendrite.yaml" cfg.settings;
-
     users.users.${cfg.settings.user} = {
       group = "matrix-dendrite";
       home = cfg.dataDir;
@@ -313,10 +311,10 @@ in {
       wantedBy = [ "multi-user.target" ];
       # preStart = ''
       #   ${cfg.package}/bin/dendrite-monolith-server \
-      #     --tls-cert ${cfg.serverCrt} \
-      #     --tls-key ${cfg.serverKey} \
       #     --config ${dendriteYaml} 
       # '';
+      #     --tls-cert ${cfg.serverCrt} \
+      #     --tls-key ${cfg.serverKey} \
       serviceConfig = {
         Type = "notify";
         User = "matrix-dendrite";
@@ -324,6 +322,7 @@ in {
         WorkingDirectory = cfg.dataDir;
         ExecStart = ''
           ${pkgs.matrix-dendrite}/bin/dendrite-monolith-server
+          --config ${configurationYaml} 
         '';
         ExecReload = "${pkgs.util-linux}/bin/kill -HUP $MAINPID";
         Restart = "on-failure";
