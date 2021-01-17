@@ -313,12 +313,13 @@ in {
       path = with pkgs; [ matrix-dendrite ];
       serviceConfig = {
         Type = "oneshot";
+        User = "matrix-dendrite";
+        Group = "matrix-dendrite";
         RemainAfterExit = true;
         WorkingDirectory = cfg.dataDir;
       };
       script = ''
         generate-keys --tls-cert server.crt --tls-key server.key --private-key matrix_key.pem
-        chmod 777 server.crt server.key matrix_key.pem
       '';
     };
 
