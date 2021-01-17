@@ -305,16 +305,28 @@ in {
 
     users.groups.matrix-dendrite = {};
 
+    systemd.services.matrix-dendriter-key-generator= {
+      description = "Dendrite Matrix homeserver - Key Generator";
+      wantedBy = [ "matrix-dendrite.service" ];
+      requiredBy = [ "matrix-dendrite.service" ];
+      before = [ "matrix-dendrite.service" ];
+      path = with pkgs; [ matrix-dendrite ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        ./bin/generate-keys --tls-cert server.crt --tls-key server.key
+      '';
+    };
+
     systemd.services.matrix-dendrite = {
       description = "Dendrite Matrix homeserver";
-      after = [ "network.target" ]; #++ optional hasLocalPostgresDB "postgresql.service";
+      after = [ 
+        "network.target" 
+        "matrix-dendriter-key-generator.service"
+      ]; #++ optional hasLocalPostgresDB "postgresql.service";
       wantedBy = [ "multi-user.target" ];
-      # preStart = ''
-      #   ${cfg.package}/bin/dendrite-monolith-server \
-      #     --config ${dendriteYaml} 
-      # '';
-      #     --tls-cert ${cfg.serverCrt} \
-      #     --tls-key ${cfg.serverKey} \
       serviceConfig = {
         Type = "notify";
         User = "matrix-dendrite";
