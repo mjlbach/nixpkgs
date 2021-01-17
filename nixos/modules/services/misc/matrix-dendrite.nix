@@ -318,6 +318,7 @@ in {
       };
       script = ''
         generate-keys --tls-cert server.crt --tls-key server.key --private-key matrix_key.pem
+        chmod 777 server.crt server.key matrix_key.pem
       '';
     };
 
