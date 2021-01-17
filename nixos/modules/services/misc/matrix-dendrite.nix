@@ -316,7 +316,7 @@ in {
         RemainAfterExit = true;
       };
       script = ''
-        ./bin/generate-keys --tls-cert server.crt --tls-key server.key
+        generate-keys --tls-cert server.crt --tls-key server.key
       '';
     };
 
