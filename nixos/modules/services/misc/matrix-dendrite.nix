@@ -14,7 +14,7 @@ in {
       enable = mkEnableOption "matrix.org dendrite";
       dataDir = mkOption {
         type = types.str;
-        default = "/var/lib/matrix-synapse";
+        default = "/var/lib/matrix-dendrite";
         description = ''
           The directory where matrix-synapse stores its stateful data such as
           certificates, media and uploads.
@@ -160,7 +160,7 @@ in {
       logging = [{
         level = "info";
         params = {
-          path = "/var/log/dendrite";
+          path = "${cfg.dataDir}/log";
         };
         type = "file";
       }];
