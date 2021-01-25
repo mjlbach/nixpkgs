@@ -4,7 +4,7 @@
 , ffmpeg, x264, libvpx, libwebp, x265
 , libfakeXinerama
 , gst_all_1, pulseaudio, gobject-introspection
-, pam }:
+, pam, withCuda ? true, nv-codec-headers, nvidia-video-sdk, addOpenGLRunpath }:
 
 with lib;
 
@@ -50,13 +50,15 @@ in buildPythonApplication rec {
     substituteInPlace setup.py --replace '/usr/include/security' '${pam}/include/security'
   '';
 
-  nativeBuildInputs = [ pkg-config wrapGAppsHook ];
+  nativeBuildInputs = [ pkg-config wrapGAppsHook nv-codec-headers addOpenGLRunpath nvidia-video-sdk ];
   buildInputs = with xorg; [
     libX11 xorgproto libXrender libXi
     libXtst libXfixes libXcomposite libXdamage
     libXrandr libxkbfile
     ] ++ [
     cython
+    nv-codec-headers
+    nvidia-video-sdk
 
     pango cairo gdk-pixbuf atk.out gtk3 glib
 
@@ -76,7 +78,7 @@ in buildPythonApplication rec {
     netifaces numpy pygobject3 pycairo gst-python pam
     pyopengl paramiko opencv4 python-uinput pyxdg
     ipaddress idna
-  ];
+  ] ++ lib.optionals withCuda [ pycuda pynvml ];
 
     # error: 'import_cairo' defined but not used
   NIX_CFLAGS_COMPILE = "-Wno-error=unused-function";
