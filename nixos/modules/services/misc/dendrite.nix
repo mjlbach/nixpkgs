@@ -154,6 +154,10 @@ in
         RuntimeDirectory = "dendrite";
         RuntimeDirectoryMode = "0700";
         EnvironmentFile = lib.mkIf (cfg.environmentFile != null) cfg.environmentFile;
+        LoadCredential = optionals (cfg.tlsCert != null && cfg.tlsKey != null) [
+          "tlsCert.crt:${cfg.tlsCert}"
+          "tlsKey.key:${cfg.tlsKey}"
+        ];
         ExecStartPre =
           if (cfg.environmentFile != null) then ''
             ${pkgs.envsubst}/bin/envsubst \
@@ -169,8 +173,8 @@ in
           "--http-bind-address :${builtins.toString cfg.httpPort}"
         ] ++ lib.optionals (cfg.httpsPort != null) [
           "--https-bind-address :${builtins.toString cfg.httpsPort}"
-          "--tls-cert ${cfg.tlsCert}"
-          "--tls-key ${cfg.tlsKey}"
+          "--tls-cert $CREDENTIALS_DIRECTORY/tlsCert.crt"
+          "--tls-key $CREDENTIALS_DIRECTORY/tlsKey.key"
         ]);
         ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
         Restart = "on-failure";
