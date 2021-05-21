@@ -24,7 +24,7 @@ stdenv.mkDerivation rec {
     glib gdk-pixbuf cairo
     mime-types pango gtk3
     glib-networking gsettings-desktop-schemas
-    xclip notify-osd enchant
+    xclip enchant
   ] ++ gstBuildInputs;
 
   GST_PLUGIN_SYSTEM_PATH_1_0 = lib.concatMapStringsSep ":" (p: "${p}/lib/gstreamer-1.0") gstBuildInputs;
